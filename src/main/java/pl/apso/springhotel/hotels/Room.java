@@ -1,9 +1,10 @@
-package pl.apso.springhotel;
+package pl.apso.springhotel.hotels;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import pl.apso.springhotel.hotels.Hotel;
 
 import javax.persistence.*;
 

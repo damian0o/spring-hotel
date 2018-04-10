@@ -1,4 +1,4 @@
-package pl.apso.springhotel;
+package pl.apso.springhotel.hotels;
 
 import org.assertj.core.api.iterable.Extractor;
 import org.junit.Test;
@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.apso.springhotel.hotels.Hotel;
+import pl.apso.springhotel.hotels.Room;
+import pl.apso.springhotel.reservation.RoomRepository;
 
 import java.util.Comparator;
 import java.util.List;

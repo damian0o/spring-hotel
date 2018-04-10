@@ -1,4 +1,4 @@
-package pl.apso.springhotel;
+package pl.apso.springhotel.hotels;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

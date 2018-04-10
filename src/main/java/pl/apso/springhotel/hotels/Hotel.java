@@ -1,4 +1,4 @@
-package pl.apso.springhotel;
+package pl.apso.springhotel.hotels;
 
 import lombok.*;
 

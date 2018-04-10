@@ -1,7 +1,10 @@
-package pl.apso.springhotel;
+package pl.apso.springhotel.reservation;
 
 
 import org.junit.Test;
+import pl.apso.springhotel.hotels.Hotel;
+import pl.apso.springhotel.hotels.Room;
+import pl.apso.springhotel.reservation.Reservation;
 
 import java.time.LocalDate;
 

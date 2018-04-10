@@ -1,4 +1,4 @@
-package pl.apso.springhotel;
+package pl.apso.springhotel.converters;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

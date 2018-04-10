@@ -1,4 +1,4 @@
-package pl.apso.springhotel;
+package pl.apso.springhotel.hotels;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.apso.springhotel.hotels.Hotel;
+import pl.apso.springhotel.hotels.HotelRepository;
 
 import java.util.List;
 import java.util.Optional;
