@@ -23,4 +23,7 @@ public class Reservation {
   @NonNull
   // to date is exclusive
   private LocalDate toDate;
+  @NonNull
+  @ManyToOne
+  private Room room;
 }

@@ -1,6 +1,5 @@
 package pl.apso.springhotel;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,9 +21,14 @@ public class ReservationEntityTest {
   @Test
   public void shouldPersistReservation() {
     // given
+    Hotel hotel = new Hotel("Grenada Hotel", "Poznan");
+    Room room = new Room(200, hotel);
+
+    testEntityManager.persist(room);
+
     LocalDate now = LocalDate.now();
     Reservation reservation =
-      new Reservation(now, now.plus(1, DAYS));
+      new Reservation(now, now.plus(1, DAYS), room);
 
     // when
     Reservation result = testEntityManager.persistFlushFind(reservation);
@@ -33,7 +36,7 @@ public class ReservationEntityTest {
     // then
     assertThat(result)
       .isEqualToIgnoringGivenFields(
-        new Reservation(now, now.plus(1, DAYS)), "id"
+        new Reservation(now, now.plus(1, DAYS), room), "id", "room"
       );
   }
 
