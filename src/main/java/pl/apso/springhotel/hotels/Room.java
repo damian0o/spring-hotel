@@ -1,17 +1,17 @@
 package pl.apso.springhotel.hotels;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import pl.apso.springhotel.hotels.Hotel;
+import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import static javax.persistence.CascadeType.ALL;
 import static lombok.AccessLevel.PRIVATE;
 
 @Data
+@AllArgsConstructor
 @RequiredArgsConstructor
 @NoArgsConstructor(access = PRIVATE)
 @Entity

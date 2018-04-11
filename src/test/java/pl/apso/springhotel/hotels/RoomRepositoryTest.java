@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.apso.springhotel.hotels.Hotel;
-import pl.apso.springhotel.hotels.Room;
-import pl.apso.springhotel.reservation.RoomRepository;
 
 import java.util.Comparator;
 import java.util.List;
@@ -134,6 +131,26 @@ public class RoomRepositoryTest {
       new Hotel("Bronze Hotel", "Warsaw"),
       new Hotel("Other", "Poznan")
     );
+  }
+
+  @Test
+  public void getRoomsByHotelName() {
+    // given
+    Hotel hotel1 = new Hotel("Primary", "Poznan");
+    entityManager.persist(new Room(100, hotel1));
+    Hotel hotel2 = new Hotel("Secondary", "Poznan");
+    entityManager.persist(new Room(100, hotel2));
+    Hotel hotel3 = new Hotel("Third", "Warsaw");
+    entityManager.persist(new Room(100, hotel3));
+    // when
+    List<Room> rooms = roomRepository.findAllByHotelName("Primary");
+
+    // then
+    assertThat(rooms).hasSize(1)
+      .usingElementComparatorIgnoringFields("id")
+      .containsExactlyInAnyOrder(
+        new Room(100, hotel1)
+      );
   }
 
 }
