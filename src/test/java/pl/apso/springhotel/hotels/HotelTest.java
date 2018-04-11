@@ -1,7 +1,6 @@
 package pl.apso.springhotel.hotels;
 
 import org.junit.Test;
-import pl.apso.springhotel.hotels.Hotel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

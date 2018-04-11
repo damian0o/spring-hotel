@@ -1,9 +1,6 @@
 package pl.apso.springhotel.reservation;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import pl.apso.springhotel.hotels.Room;
 
 import javax.persistence.*;
@@ -14,6 +11,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor(access = PRIVATE)
+@AllArgsConstructor
 @Entity
 public class Reservation {
   @Id

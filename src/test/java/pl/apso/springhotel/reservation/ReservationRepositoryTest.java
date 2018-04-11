@@ -8,13 +8,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.apso.springhotel.hotels.Hotel;
 import pl.apso.springhotel.hotels.Room;
-import pl.apso.springhotel.reservation.Reservation;
-import pl.apso.springhotel.reservation.ReservationRepository;
 
-import java.util.Arrays;
+import java.time.LocalDate;
 import java.util.List;
 
-import static java.time.LocalDate.of;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -28,82 +26,105 @@ public class ReservationRepositoryTest {
   private TestEntityManager entityManager;
 
   @Test
-  public void findNotCollidingReservations() {
+  public void shouldNotFoundAnyCollidingReservations() {
     // given
-    Hotel hotel = new Hotel("Yolo", "Warsaw");
-    Room room = new Room(12, hotel);
-    entityManager.persist(room);
-    entityManager.persist(
-      new Reservation(
-        of(2019, 1, 1),
-        of(2019, 1, 3),
-        room)
-    );
-    entityManager.persist(
-      new Reservation(
-        of(2019, 1, 3),
-        of(2019, 1, 5), room
-      )
-    );
-    entityManager.persist(
-      new Reservation(
-        of(2019, 1, 2),
-        of(2019, 1, 4), room
-      ));
+    LocalDate start = LocalDate.of(2018, 4, 1);
+    LocalDate end = start.plusDays(4);
+
+    Hotel hotel = new Hotel("Temp", "City");
+    Room room1 = new Room(200, hotel);
+    entityManager.persist(room1);
+    entityManager.persist(new Reservation(start.minusDays(2), start, room1));
+    entityManager.persist(new Reservation(end, end.plusDays(2), room1));
+    entityManager.persist(new Reservation(end.plusDays(2), end.plusDays(4), room1));
+    entityManager.persist(new Reservation(end.plusDays(1), end.plusDays(4), room1));
+    entityManager.persist(new Reservation(start.minusDays(1), start, room1));
     // when
-    List<Reservation> allForGivenDate =
-      reservationRepository.findAllNotColliding(
-        of(2019, 1, 3),
-        of(2019, 1, 5)
-      );
+    List<Reservation> result = reservationRepository.findAllColliding(start, end);
     // then
-    assertThat(allForGivenDate)
-      .hasSize(1)
-      .usingElementComparatorIgnoringFields("id", "room")
-      .containsExactlyInAnyOrder(new Reservation(
-        of(2019, 1, 1),
-        of(2019, 1, 3),
-        room)
-      );
+    assertThat(result).isEmpty();
   }
 
   @Test
-  public void shouldFindFreeDateForGivenPeriodAndRoom() {
-    Hotel hotel = new Hotel("Yolo", "Warsaw");
-    Room room1 = new Room(120, hotel);
-    Room room2 = new Room(120, hotel);
+  public void shouldFindCollidingReservation() {
+    // given
+    LocalDate start = LocalDate.of(2018, 4, 1);
+    LocalDate end = start.plusDays(4);
+
+    Hotel hotel = new Hotel("Temp", "City");
+    Room room1 = new Room(200, hotel);
     entityManager.persist(room1);
-    entityManager.persist(room2);
-    entityManager.persist(
-      new Reservation(
-        of(2019, 1, 1),
-        of(2019, 1, 3),
-        room1)
-    );
-    entityManager.persist(
-      new Reservation(
-        of(2019, 1, 1),
-        of(2019, 1, 3),
-        room2
-      )
-    );
 
+    Reservation res1 = new Reservation(start, end.plusDays(1), room1);
+    entityManager.persist(res1);
     // when
-    List<Reservation> allForGivenDate =
-      reservationRepository.findAllNotCollidingforRoom(
-        of(2019, 1, 3),
-        of(2019, 1, 5),
-        Arrays.asList(room1));
-
+    List<Reservation> result = reservationRepository.findAllColliding(start, end);
     // then
-    assertThat(allForGivenDate)
-      .hasSize(1)
-      .usingElementComparatorIgnoringFields("id", "room")
-      .containsExactlyInAnyOrder(new Reservation(
-        of(2019, 1, 1),
-        of(2019, 1, 3),
-        room1)
-      );
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0)).isEqualToComparingOnlyGivenFields(res1, "fromDate", "toDate");
   }
+
+  @Test
+  public void shouldNotFoundAnyCollidingReservationsForRoom() {
+    // given
+    LocalDate start = LocalDate.of(2018, 4, 1);
+    LocalDate end = start.plusDays(4);
+
+    Hotel hotel = new Hotel("Temp", "City");
+    Room wantedRoom = new Room(200, hotel);
+
+    entityManager.persist(wantedRoom);
+    entityManager.persist(new Reservation(start.minusDays(2), start, wantedRoom));
+    entityManager.persist(new Reservation(end, end.plusDays(2), wantedRoom));
+    entityManager.persist(new Reservation(end.plusDays(2), end.plusDays(4), wantedRoom));
+    entityManager.persist(new Reservation(end.plusDays(1), end.plusDays(4), wantedRoom));
+    entityManager.persist(new Reservation(start.minusDays(1), start, wantedRoom));
+    // when
+    List<Reservation> result = reservationRepository.findAllCollidingForRoom(start, end, singletonList(wantedRoom));
+    // then
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  public void shouldFindCollidingReservationForRoom() {
+    // given
+    LocalDate start = LocalDate.of(2018, 4, 1);
+    LocalDate end = start.plusDays(4);
+
+    Hotel hotel = new Hotel("Temp", "City");
+    Room wantedRoom = new Room(200, hotel);
+    entityManager.persist(wantedRoom);
+
+    Reservation res1 = new Reservation(start, end.plusDays(1), wantedRoom);
+    entityManager.persist(res1);
+    // when
+    List<Reservation> result = reservationRepository.findAllCollidingForRoom(start, end, singletonList(wantedRoom));
+    // then
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0)).isEqualToComparingOnlyGivenFields(res1, "fromDate", "toDate");
+  }
+
+  @Test
+  public void shouldNotFindAnyCollisionsWhenRoomIsDifferent() {
+    // given
+    LocalDate start = LocalDate.of(2018, 4, 1);
+    LocalDate end = start.plusDays(4);
+
+    Hotel hotel = new Hotel("Temp", "City");
+    Room reservedRoom = new Room(100, hotel);
+    entityManager.persist(reservedRoom);
+
+    Reservation res1 = new Reservation(start, end.plusDays(1), reservedRoom);
+
+    entityManager.persist(res1);
+
+    Room wantedRoom = new Room(200, hotel);
+    entityManager.persist(wantedRoom);
+    // when
+    List<Reservation> result = reservationRepository.findAllCollidingForRoom(start, end, singletonList(wantedRoom));
+    // then
+    assertThat(result).hasSize(0);
+  }
+
 
 }
