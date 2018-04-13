@@ -1,4 +1,4 @@
-package pl.apso.springhotel.hotels;
+package pl.apso.springhotel.hotel;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
+import static java.util.Collections.emptyList;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -23,17 +24,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class HotelControllerTest {
 
   @MockBean
-  private HotelService hotelService;
+  private HotelManagementService hotelManagementService;
 
   @Autowired
   private MockMvc mockMvc;
 
   @Test
-  public void shouldReturnHotelList() throws Exception {
-    Hotel gary = new Hotel(1L, "Gary Hotel", "Wroclaw");
-    Hotel saint = new Hotel(2L, "Saint Inn", "Wroclaw");
+  public void shouldReturnHotelsList() throws Exception {
+    Hotel gary = new Hotel(1L, "Gary Hotel", "Wroclaw", emptyList());
+    Hotel saint = new Hotel(2L, "Saint Inn", "Wroclaw", emptyList());
 
-    given(hotelService.getAll()).willReturn(Arrays.asList(gary, saint));
+    given(hotelManagementService.getAll()).willReturn(Arrays.asList(gary, saint));
 
     mockMvc.perform(get("/hotel"))
       .andExpect(status().isOk())
@@ -46,9 +47,9 @@ public class HotelControllerTest {
   }
 
   @Test
-  public void shouldReturnHotel() throws Exception {
-    Hotel hotel = new Hotel(1L, "PeterHotel", "Wroclaw");
-    given(hotelService.getHotel(anyString())).willReturn(hotel);
+  public void shouldReturnHotelByName() throws Exception {
+    Hotel hotel = new Hotel(1L, "PeterHotel", "Wroclaw", emptyList());
+    given(hotelManagementService.getHotel(anyString())).willReturn(hotel);
 
     mockMvc.perform(get("/hotel/PeterHotel"))
       .andExpect(status().isOk())
@@ -58,8 +59,8 @@ public class HotelControllerTest {
 
   @Test
   public void shouldAddNewHotel() throws Exception {
-    Hotel hotel = new Hotel(10L, "simple", "wroclaw");
-    given(hotelService.create(eq(new Hotel("simple", "wroclaw")))).willReturn(hotel);
+    Hotel hotel = new Hotel(10L, "simple", "wroclaw", emptyList());
+    given(hotelManagementService.create(eq(new Hotel("simple", "wroclaw")))).willReturn(hotel);
 
     String json = "{\"name\": \"simple\", \"city\": \"wroclaw\"}";
     mockMvc.perform(post("/hotel")
@@ -72,7 +73,7 @@ public class HotelControllerTest {
 
   @Test
   public void whenHotelNameAlreadyExists() throws Exception {
-    given(hotelService.create(any(Hotel.class))).willThrow(new HotelAlreadyExistsException());
+    given(hotelManagementService.create(any(Hotel.class))).willThrow(new HotelAlreadyExistsException());
     String json = "{\"name\": \"simple\", \"city\": \"wroclaw\"}";
     mockMvc.perform(post("/hotel")
       .contentType(APPLICATION_JSON)
@@ -82,43 +83,39 @@ public class HotelControllerTest {
 
   @Test
   public void whenHotelNotFound() throws Exception {
-    given(hotelService.getHotel(anyString())).willThrow(new HotelNotFoundException());
+    given(hotelManagementService.getHotel(anyString())).willThrow(new HotelNotFoundException());
     mockMvc.perform(get("/hotel/any"))
       .andExpect(status().isNotFound());
   }
 
   @Test
   public void shouldReturnListOfRoomsForHotel() throws Exception {
-    Hotel hotel = new Hotel(10L, "first", "warsaw");
+    Hotel hotel = new Hotel(10L, "first", "warsaw", null);
     Room room1 = new Room(1L, 200, hotel);
     Room room2 = new Room(2L, 150, hotel);
-    given(hotelService.getRooms(eq("first")))
+    given(hotelManagementService.getRooms(eq("first")))
       .willReturn(Arrays.asList(room1, room2));
 
     mockMvc.perform(get("/hotel/first/room"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$[0].id").value(1))
       .andExpect(jsonPath("$[0].price").value(200))
-      .andExpect(jsonPath("$[0].hotel.name").value("first"))
       .andExpect(jsonPath("$[1].id").value(2))
-      .andExpect(jsonPath("$[1].price").value(150))
-      .andExpect(jsonPath("$[1].hotel.name").value("first"));
+      .andExpect(jsonPath("$[1].price").value(150));
   }
 
   @Test
   public void shouldCreateRoomForGivenHotel() throws Exception {
-    Hotel hotel = new Hotel(1L, "simple", "wroclaw");
+    Hotel hotel = new Hotel(1L, "simple", "wroclaw", null);
     Room room = new Room(2L, 100, hotel);
-    given(hotelService.addRoom(eq("simple"), any(Room.class))).willReturn(room);
+    given(hotelManagementService.addRoom(eq("simple"), any(Room.class))).willReturn(room);
 
     String json = "{\"price\": 100}";
     mockMvc.perform(post("/hotel/simple/room")
       .contentType(APPLICATION_JSON).content(json))
       .andExpect(status().isOk())
       .andExpect(jsonPath("id").value(2L))
-      .andExpect(jsonPath("price").value(100))
-      .andExpect(jsonPath("hotel.name").value("simple"))
-      .andExpect(jsonPath("hotel.city").value("wroclaw"));
+      .andExpect(jsonPath("price").value(100));
   }
 
 }

@@ -1,8 +1,8 @@
 package pl.apso.springhotel.reservation;
 
 import org.springframework.stereotype.Service;
-import pl.apso.springhotel.hotels.Room;
-import pl.apso.springhotel.hotels.RoomRepository;
+import pl.apso.springhotel.hotel.Room;
+import pl.apso.springhotel.hotel.RoomRepository;
 
 import java.time.LocalDate;
 import java.util.List;

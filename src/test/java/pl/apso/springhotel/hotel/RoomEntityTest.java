@@ -1,4 +1,4 @@
-package pl.apso.springhotel.hotels;
+package pl.apso.springhotel.hotel;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.apso.springhotel.hotels.Hotel;
-import pl.apso.springhotel.hotels.Room;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -23,11 +25,13 @@ public class RoomEntityTest {
     // given
     Hotel hotel = new Hotel("Big Hotel", "Warsaw");
     Room room = new Room(100, hotel);
+    hotel.setRooms(singletonList(room));
     // when
     Room result = entityManager.persistFlushFind(room);
     // then
     assertThat(result.getPrice()).isEqualTo(100);
-    assertThat(result.getHotel()).isEqualToIgnoringGivenFields(hotel, "id");
+    assertThat(result.getHotel().getName()).isEqualTo("Big Hotel");
+    assertThat(result.getHotel().getCity()).isEqualTo("Warsaw");
   }
 
 }

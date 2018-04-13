@@ -1,4 +1,4 @@
-package pl.apso.springhotel.hotels;
+package pl.apso.springhotel.hotel;
 
 import org.junit.Test;
 

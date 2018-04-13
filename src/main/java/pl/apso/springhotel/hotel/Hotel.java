@@ -1,13 +1,21 @@
-package pl.apso.springhotel.hotels;
+package pl.apso.springhotel.hotel;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
+import static javax.persistence.CascadeType.ALL;
+
+/**
+ * Represent database hotel entity.
+ */
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "rooms")
 @Entity
 public class Hotel {
   @Id
@@ -19,4 +27,7 @@ public class Hotel {
   private String name;
   @NonNull
   private String city;
+  @OneToMany(mappedBy = "hotel", cascade = ALL, orphanRemoval = true)
+  @JsonManagedReference
+  private List<Room> rooms;
 }

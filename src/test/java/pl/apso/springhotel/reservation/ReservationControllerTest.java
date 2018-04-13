@@ -7,8 +7,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.apso.springhotel.hotels.Hotel;
-import pl.apso.springhotel.hotels.Room;
+import pl.apso.springhotel.hotel.Hotel;
+import pl.apso.springhotel.hotel.Room;
 
 import java.time.LocalDate;
 
@@ -37,7 +37,7 @@ public class ReservationControllerTest {
     int priceMin = 200;
     int priceMax = 250;
 
-    Hotel hotel = new Hotel(1L, "simple", "poznan");
+    Hotel hotel = new Hotel(1L, "simple", "poznan", null);
     Room room = new Room(1L, 200, hotel);
     given(reservationService.getRooms(
       start, end, city, priceMin, priceMax)
@@ -52,8 +52,7 @@ public class ReservationControllerTest {
         .param("max", "250"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$[0].id").value(1))
-      .andExpect(jsonPath("$[0].price").value(200))
-      .andExpect(jsonPath("$[0].hotel.name").value("simple"));
+      .andExpect(jsonPath("$[0].price").value(200));
   }
 
 }

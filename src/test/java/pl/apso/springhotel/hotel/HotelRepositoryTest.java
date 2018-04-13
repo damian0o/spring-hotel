@@ -1,4 +1,4 @@
-package pl.apso.springhotel.hotels;
+package pl.apso.springhotel.hotel;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,23 @@ public class HotelRepositoryTest {
 
   @Autowired
   private TestEntityManager entityManager;
+
+  @Test
+  public void shouldPersistWithRooms() {
+    // given
+    Hotel hotel = new Hotel("Pirate Bay Hotel", "Poznan");
+    Room r1 = new Room(100);
+    Room r2 = new Room(200);
+    Room r3 = new Room(300);
+    Room r4 = new Room(400);
+    hotel.setRooms(Arrays.asList(r1, r2, r3, r4));
+    // when
+    Hotel saved = hotelRepository.save(hotel);
+    Optional<Hotel> result = hotelRepository.findById(saved.getId());
+    // then
+    assertThat(result).isPresent();
+    assertThat(result.get().getRooms()).hasSize(4);
+  }
 
   @Test
   public void getHotelById() {
@@ -64,11 +82,11 @@ public class HotelRepositoryTest {
 
     // then
     assertThat(results).hasSize(2)
-      .usingElementComparatorOnFields("name", "city")
-      .containsExactlyInAnyOrder(
-        new Hotel("Integral Palace", "Szczecin"),
-        new Hotel("Stocznia Hotel", "Szczecin")
-      );
+        .usingElementComparatorOnFields("name", "city")
+        .containsExactlyInAnyOrder(
+            new Hotel("Integral Palace", "Szczecin"),
+            new Hotel("Stocznia Hotel", "Szczecin")
+        );
   }
 
 }

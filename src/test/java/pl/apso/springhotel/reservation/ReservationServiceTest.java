@@ -5,9 +5,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import pl.apso.springhotel.hotels.Hotel;
-import pl.apso.springhotel.hotels.Room;
-import pl.apso.springhotel.hotels.RoomRepository;
+import pl.apso.springhotel.hotel.Hotel;
+import pl.apso.springhotel.hotel.Room;
+import pl.apso.springhotel.hotel.RoomRepository;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -41,7 +41,7 @@ public class ReservationServiceTest {
     int priceMin = 100;
     int priceMax = 200;
 
-    Hotel hotel = new Hotel(1L, "Roo Inn", "Krakow");
+    Hotel hotel = new Hotel(1L, "Roo Inn", "Krakow", null);
     Room room = new Room(1L, 200, hotel);
 
     List<Room> returnedRooms = asList(room);

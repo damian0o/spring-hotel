@@ -3,7 +3,7 @@ package pl.apso.springhotel.reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import pl.apso.springhotel.hotels.Room;
+import pl.apso.springhotel.hotel.Room;
 
 import java.time.LocalDate;
 import java.util.List;

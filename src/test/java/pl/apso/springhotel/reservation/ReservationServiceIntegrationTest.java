@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.apso.springhotel.hotels.Hotel;
-import pl.apso.springhotel.hotels.Room;
-import pl.apso.springhotel.hotels.RoomRepository;
+import pl.apso.springhotel.hotel.Hotel;
+import pl.apso.springhotel.hotel.Room;
+import pl.apso.springhotel.hotel.RoomRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -42,9 +42,9 @@ public class ReservationServiceIntegrationTest {
     List<Room> rooms = reservationService.getRooms(start, end, city, min, max);
 
     // then
-    assertThat(rooms).hasSize(1).containsExactly(
-      new Room(1L, 100, new Hotel(1L, "Marin", "Kolobrzeg"))
-    );
+    assertThat(rooms).hasSize(1);
+    assertThat(rooms).usingElementComparatorIgnoringFields("hotel")
+        .containsExactly(new Room(1L, 100, null));
   }
 
 }

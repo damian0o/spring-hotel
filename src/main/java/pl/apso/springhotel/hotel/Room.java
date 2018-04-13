@@ -1,5 +1,6 @@
-package pl.apso.springhotel.hotels;
+package pl.apso.springhotel.hotel;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -7,19 +8,32 @@ import javax.persistence.*;
 import static javax.persistence.CascadeType.ALL;
 import static lombok.AccessLevel.PRIVATE;
 
+/**
+ * Represents room entity in database.
+ */
 @Data
+@ToString(exclude = "hotel")
 @AllArgsConstructor
-@RequiredArgsConstructor
 @NoArgsConstructor(access = PRIVATE)
+@EqualsAndHashCode(exclude = "hotel")
 @Entity
 public class Room {
   @Id
   @SequenceGenerator(name = "room_gen", sequenceName = "room_id_seq", allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "room_gen")
   private Long id;
-  @NonNull
   private Integer price;
-  @NonNull
   @ManyToOne(cascade = ALL)
+  @JsonBackReference
   private Hotel hotel;
+
+  public Room(Integer price) {
+    this.price = price;
+  }
+
+  public Room(Integer price, Hotel hotel) {
+    this.price = price;
+    this.hotel = hotel;
+  }
+
 }

@@ -1,0 +1,12 @@
+{
+    "name": "First",
+    "city": "Poznan",
+    "rooms": [
+        {
+            "price": 150
+        },
+        {
+            "price": 160
+        }
+    ]
+}

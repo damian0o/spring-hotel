@@ -1,4 +1,4 @@
-package pl.apso.springhotel.hotels;
+package pl.apso.springhotel.hotel;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,6 +7,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
+
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -17,10 +20,9 @@ public class HotelEntityTest {
   private TestEntityManager entityManager;
 
   @Test
-  public void hotelPersistEntity() {
+  public void shouldPersistHotel() {
     // given
     Hotel hotelToPersist = new Hotel("JUnit Bay", "Gdansk");
-
     // when
     Hotel result = entityManager.persistFlushFind(hotelToPersist);
 
@@ -31,7 +33,7 @@ public class HotelEntityTest {
   }
 
   @Test
-  public void hotelGetById() {
+  public void shouldReturnById() {
     // given
     Hotel hotelToPersist = new Hotel("Assert House", "Kolobrzeg");
     Long id = (Long) entityManager.persistAndGetId(hotelToPersist);

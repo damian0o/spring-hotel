@@ -1,7 +1,7 @@
 package pl.apso.springhotel.reservation;
 
 import lombok.*;
-import pl.apso.springhotel.hotels.Room;
+import pl.apso.springhotel.hotel.Room;
 
 import javax.persistence.*;
 import java.time.LocalDate;
