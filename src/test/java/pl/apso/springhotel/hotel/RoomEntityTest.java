@@ -24,7 +24,7 @@ public class RoomEntityTest {
   public void shouldPersistRoom() {
     // given
     Hotel hotel = new Hotel("Big Hotel", "Warsaw");
-    Room room = new Room(100, hotel);
+    Room room = Room.builder().price(100).hotel(hotel).build();
     hotel.setRooms(singletonList(room));
     // when
     Room result = entityManager.persistFlushFind(room);

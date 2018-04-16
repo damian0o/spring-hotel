@@ -24,22 +24,25 @@ public class ReservationEntityTest {
   public void shouldPersistReservation() {
     // given
     Hotel hotel = new Hotel("Grenada Hotel", "Poznan");
-    Room room = new Room(200, hotel);
+    Room room = Room.builder().price(200).hotel(hotel).build();
 
     testEntityManager.persist(room);
 
     LocalDate now = LocalDate.now();
     Reservation reservation =
-      new Reservation(now, now.plus(1, DAYS), room);
+        Reservation.builder().start(now).end(now.plus(1, DAYS)).room(room).build();
 
     // when
     Reservation result = testEntityManager.persistFlushFind(reservation);
 
     // then
     assertThat(result)
-      .isEqualToIgnoringGivenFields(
-        new Reservation(now, now.plus(1, DAYS), room), "id", "room"
-      );
+        .isEqualToIgnoringGivenFields(
+            Reservation.builder()
+                .start(now)
+                .end(now.plus(1, DAYS))
+                .room(room).build(), "id", "room"
+        );
   }
 
 }

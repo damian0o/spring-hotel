@@ -15,12 +15,12 @@ public class ReservationTest {
   @Test
   public void createReservation() {
     Hotel hotel = new Hotel("Guava Inn", "Krakow");
-    Room room = new Room(120, hotel);
+    Room room = Room.builder().price(120).hotel(hotel).build();
     LocalDate from = LocalDate.now();
     LocalDate to = from.plus(1, DAYS);
-    Reservation r = new Reservation(from, to, room);
-    assertThat(r.getFromDate()).isEqualTo(from);
-    assertThat(r.getToDate()).isEqualTo(to);
+    Reservation r = Reservation.builder().start(from).end(to).room(room).build();
+    assertThat(r.getStart()).isEqualTo(from);
+    assertThat(r.getEnd()).isEqualTo(to);
   }
 
 }

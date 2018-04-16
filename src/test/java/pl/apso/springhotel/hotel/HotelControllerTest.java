@@ -91,8 +91,8 @@ public class HotelControllerTest {
   @Test
   public void shouldReturnListOfRoomsForHotel() throws Exception {
     Hotel hotel = new Hotel(10L, "first", "warsaw", null);
-    Room room1 = new Room(1L, 200, hotel);
-    Room room2 = new Room(2L, 150, hotel);
+    Room room1 = Room.builder().id(1L).price(200).hotel(hotel).build();
+    Room room2 = Room.builder().id(2L).price(150).hotel(hotel).build();
     given(hotelManagementService.getRooms(eq("first")))
       .willReturn(Arrays.asList(room1, room2));
 
@@ -107,7 +107,7 @@ public class HotelControllerTest {
   @Test
   public void shouldCreateRoomForGivenHotel() throws Exception {
     Hotel hotel = new Hotel(1L, "simple", "wroclaw", null);
-    Room room = new Room(2L, 100, hotel);
+    Room room = Room.builder().id(2L).price(100).hotel(hotel).build();
     given(hotelManagementService.addRoom(eq("simple"), any(Room.class))).willReturn(room);
 
     String json = "{\"price\": 100}";

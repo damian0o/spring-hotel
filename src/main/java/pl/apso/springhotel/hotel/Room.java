@@ -17,6 +17,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 @EqualsAndHashCode(exclude = "hotel")
 @Entity
+@Builder
 public class Room {
   @Id
   @SequenceGenerator(name = "room_gen", sequenceName = "room_id_seq", allocationSize = 1)
@@ -26,14 +27,6 @@ public class Room {
   @ManyToOne(cascade = ALL)
   @JsonBackReference
   private Hotel hotel;
-
-  public Room(Integer price) {
-    this.price = price;
-  }
-
-  public Room(Integer price, Hotel hotel) {
-    this.price = price;
-    this.hotel = hotel;
-  }
+  private boolean avail = true;
 
 }

@@ -12,12 +12,14 @@ import pl.apso.springhotel.hotel.RoomRepository;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,23 +44,56 @@ public class ReservationServiceTest {
     int priceMax = 200;
 
     Hotel hotel = new Hotel(1L, "Roo Inn", "Krakow", null);
-    Room room = new Room(1L, 200, hotel);
+    Room room = Room.builder().id(1L).avail(true).price(200).hotel(hotel).build();
 
-    List<Room> returnedRooms = asList(room);
+    List<Room> returnedRooms = singletonList(room);
     when(roomRepository.findAllByPriceIsBetweenAndHotelCity(priceMin, priceMax, city))
-      .thenReturn(returnedRooms);
+        .thenReturn(returnedRooms);
 
     when(reservationRepository.findAllCollidingForRoom(start, end, returnedRooms))
-      .thenReturn(Collections.emptyList());
+        .thenReturn(Collections.emptyList());
     // when
     List<Room> result = reservationService.getRooms(start, end, city, priceMin, priceMax);
     // then
     assertThat(result).containsExactly(room);
 
     verify(roomRepository, only())
-      .findAllByPriceIsBetweenAndHotelCity(anyInt(), anyInt(), anyString());
+        .findAllByPriceIsBetweenAndHotelCity(anyInt(), anyInt(), anyString());
     verify(reservationRepository, only())
-      .findAllCollidingForRoom(any(LocalDate.class), any(LocalDate.class), any());
+        .findAllCollidingForRoom(any(LocalDate.class), any(LocalDate.class), any());
+  }
+
+  @Test
+  public void shouldAddReservationToPendingList() throws Exception {
+    // given
+    Hotel hotel = Hotel.builder().id(1L).name("MyHotel").city("Poznan").build();
+    Room room = new Room(1L, 200, hotel, true);
+    given(roomRepository.findById(1L)).willReturn(Optional.of(room));
+    given(reservationRepository.save(any(Reservation.class)))
+        .willReturn(Reservation.builder()
+            .id(1L)
+            .start(LocalDate.of(2017, 5, 5))
+            .end(LocalDate.of(2017, 5, 7))
+            .room(room).accepted(false).build());
+
+    // when
+    ReservationRequest request = new ReservationRequest(
+        LocalDate.of(2017, 5, 5),
+        LocalDate.of(2017, 5, 7), 1L);
+    ReservationResponse response = reservationService.submitReservation(request);
+    // then
+    assertThat(response).isEqualTo(new ReservationResponse(1L, 1L, "PENDING"));
+  }
+
+  @Test(expected = RoomNotFoundException.class)
+  public void shouldThrowRoomNotFoundException() throws Exception {
+    // given
+    given(roomRepository.findById(1L)).willReturn(Optional.empty());
+
+    // when
+    reservationService.submitReservation(
+        new ReservationRequest(LocalDate.now(), LocalDate.now(), 1L)
+    );
   }
 
 }

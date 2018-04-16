@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Allow to access room entity from database.
+ */
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
   List<Room> findAllByPrice(int price);

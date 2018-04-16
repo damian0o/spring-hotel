@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "spring-hotel",
-		"_postman_id": "7514f49a-22d0-ae31-cfba-8c658b58ce19",
+		"_postman_id": "2d7def10-17fb-cdef-2434-a1ec41512e8b",
 		"description": "Spring Hotel requests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -33,7 +33,10 @@
 				"url": "localhost:8080/hotel",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -44,7 +47,10 @@
 				"url": "localhost:8080/hotel/Lambda Hotel",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -55,7 +61,10 @@
 				"url": "localhost:8080/hotel/Lambda Hotel/room",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -128,7 +137,30 @@
 				},
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "create reservation",
+			"request": {
+				"url": ":8080/reservation",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"start\": \"2017-05-25\",\n\t\"end\": \"2017-05-26\",\n\t\"roomId\": 1\n\t\n}"
+				},
 				"description": ""
 			},
 			"response": []

@@ -28,14 +28,16 @@ public class RoomRepositoryTest {
   public void getById() {
     // given
     Hotel hotel = new Hotel("Paradise", "Poznan");
-    Long id = (Long) entityManager.persistAndGetId(new Room(150, hotel));
+
+    Room room = Room.builder().price(150).hotel(hotel).build();
+    Long id = (Long) entityManager.persistAndGetId(room);
     // when
     Optional<Room> result = roomRepository.findById(id);
     // then
     assertThat(result).isPresent();
-    Room room = result.get();
-    assertThat(room.getPrice()).isEqualTo(150);
-    assertThat(room.getHotel())
+    Room roomResult = result.get();
+    assertThat(roomResult.getPrice()).isEqualTo(150);
+    assertThat(roomResult.getHotel())
       .isEqualToIgnoringGivenFields(
         new Hotel("Paradise", "Poznan"), "id"
       );
@@ -45,9 +47,9 @@ public class RoomRepositoryTest {
   public void findRoomByPrice() {
     // given
     Hotel hotel = new Hotel("JemHotel", "Temp");
-    entityManager.persist(new Room(100, hotel));
-    entityManager.persist(new Room(200, hotel));
-    entityManager.persist(new Room(100, hotel));
+    entityManager.persist(Room.builder().price(100).hotel(hotel).build());
+    entityManager.persist(Room.builder().price(200).hotel(hotel).build());
+    entityManager.persist(Room.builder().price(100).hotel(hotel).build());
 
     // when
     List<Room> rooms = roomRepository.findAllByPrice(100);
@@ -60,14 +62,14 @@ public class RoomRepositoryTest {
   public void getRoomsWithPriceLessThenOrEq() {
     // given
     Hotel hotel1 = new Hotel("Marina", "Temp");
-    entityManager.persist(new Room(100, hotel1));
-    entityManager.persist(new Room(100, hotel1));
-    entityManager.persist(new Room(120, hotel1));
-    entityManager.persist(new Room(130, hotel1));
-    entityManager.persist(new Room(131, hotel1));
+    entityManager.persist(Room.builder().price(100).hotel(hotel1).build());
+    entityManager.persist(Room.builder().price(100).hotel(hotel1).build());
+    entityManager.persist(Room.builder().price(120).hotel(hotel1).build());
+    entityManager.persist(Room.builder().price(130).hotel(hotel1).build());
+    entityManager.persist(Room.builder().price(131).hotel(hotel1).build());
 
     Hotel hotel2 = new Hotel("Yolo INN", "Context");
-    entityManager.persist(new Room(100, hotel2));
+    entityManager.persist(Room.builder().price(100).hotel(hotel2).build());
     // when
     List<Room> rooms = roomRepository.findAllByPriceLessThanEqual(130);
     // then
@@ -78,11 +80,11 @@ public class RoomRepositoryTest {
   public void getRoomsByHotelCity() {
     // given
     Hotel hotel1 = new Hotel("Su", "Poznan");
-    entityManager.persist(new Room(100, hotel1));
+    entityManager.persist(Room.builder().price(100).hotel(hotel1).build());
     Hotel hotel2 = new Hotel("Sudo", "Poznan");
-    entityManager.persist(new Room(100, hotel2));
+    entityManager.persist(Room.builder().price(100).hotel(hotel2).build());
     Hotel hotel3 = new Hotel("Pwd", "Warsaw");
-    entityManager.persist(new Room(100, hotel3));
+    entityManager.persist(Room.builder().price(100).hotel(hotel3).build());
     // when
     List<Room> rooms = roomRepository.findAllByHotelCity("Poznan");
 
@@ -100,18 +102,18 @@ public class RoomRepositoryTest {
   public void getRoomsByPriceBetweenAndHotelCity() {
     // given
     Hotel hotel1 = new Hotel("Gold Hotel", "Warsaw");
-    entityManager.persist(new Room(100, hotel1));
-    entityManager.persist(new Room(120, hotel1));
-    entityManager.persist(new Room(140, hotel1));
-    entityManager.persist(new Room(150, hotel1));
+    entityManager.persist(Room.builder().price(120).hotel(hotel1).build());
+    entityManager.persist(Room.builder().price(100).hotel(hotel1).build());
+    entityManager.persist(Room.builder().price(140).hotel(hotel1).build());
+    entityManager.persist(Room.builder().price(150).hotel(hotel1).build());
     Hotel hotel2 = new Hotel("Silver Hotel", "Warsaw");
-    entityManager.persist(new Room(100, hotel2));
-    entityManager.persist(new Room(120, hotel2));
-    entityManager.persist(new Room(130, hotel2));
+    entityManager.persist(Room.builder().price(100).hotel(hotel2).build());
+    entityManager.persist(Room.builder().price(120).hotel(hotel2).build());
+    entityManager.persist(Room.builder().price(130).hotel(hotel2).build());
     Hotel hotel3 = new Hotel("Bronze Hotel", "Warsaw");
-    entityManager.persist(new Room(110, hotel3));
+    entityManager.persist(Room.builder().price(110).hotel(hotel3).build());
     Hotel hotel4 = new Hotel("Other", "Poznan");
-    entityManager.persist(new Room(120, hotel4));
+    entityManager.persist(Room.builder().price(120).hotel(hotel4).build());
 
     // when
     List<Room> rooms = roomRepository
@@ -137,11 +139,11 @@ public class RoomRepositoryTest {
   public void getRoomsByHotelName() {
     // given
     Hotel hotel1 = new Hotel("Primary", "Poznan");
-    entityManager.persist(new Room(100, hotel1));
+    entityManager.persist(Room.builder().price(100).hotel(hotel1).build());
     Hotel hotel2 = new Hotel("Secondary", "Poznan");
-    entityManager.persist(new Room(100, hotel2));
+    entityManager.persist(Room.builder().price(100).hotel(hotel2).build());
     Hotel hotel3 = new Hotel("Third", "Warsaw");
-    entityManager.persist(new Room(100, hotel3));
+    entityManager.persist(Room.builder().price(100).hotel(hotel3).build());
     // when
     List<Room> rooms = roomRepository.findAllByHotelName("Primary");
 
@@ -149,7 +151,7 @@ public class RoomRepositoryTest {
     assertThat(rooms).hasSize(1)
       .usingElementComparatorIgnoringFields("id")
       .containsExactlyInAnyOrder(
-        new Room(100, hotel1)
+        Room.builder().price(100).hotel(hotel1).build()
       );
   }
 

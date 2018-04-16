@@ -16,6 +16,7 @@ import static javax.persistence.CascadeType.ALL;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = "rooms")
+@Builder
 @Entity
 public class Hotel {
   @Id

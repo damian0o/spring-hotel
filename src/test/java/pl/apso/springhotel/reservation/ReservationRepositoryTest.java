@@ -32,13 +32,13 @@ public class ReservationRepositoryTest {
     LocalDate end = start.plusDays(4);
 
     Hotel hotel = new Hotel("Temp", "City");
-    Room room1 = new Room(200, hotel);
+    Room room1 = Room.builder().price(200).hotel(hotel).build();
     entityManager.persist(room1);
-    entityManager.persist(new Reservation(start.minusDays(2), start, room1));
-    entityManager.persist(new Reservation(end, end.plusDays(2), room1));
-    entityManager.persist(new Reservation(end.plusDays(2), end.plusDays(4), room1));
-    entityManager.persist(new Reservation(end.plusDays(1), end.plusDays(4), room1));
-    entityManager.persist(new Reservation(start.minusDays(1), start, room1));
+    entityManager.persist(Reservation.builder().start(start.minusDays(2)).end(start).room(room1).build());
+    entityManager.persist(Reservation.builder().start(end).end(end.plusDays(2)).room(room1).build());
+    entityManager.persist(Reservation.builder().start(end.plusDays(2)).end(end.plusDays(4)).room(room1).build());
+    entityManager.persist(Reservation.builder().start(end.plusDays(1)).end(end.plusDays(4)).room(room1).build());
+    entityManager.persist(Reservation.builder().start(start.minusDays(1)).end(start).room(room1).build());
     // when
     List<Reservation> result = reservationRepository.findAllColliding(start, end);
     // then
@@ -52,16 +52,16 @@ public class ReservationRepositoryTest {
     LocalDate end = start.plusDays(4);
 
     Hotel hotel = new Hotel("Temp", "City");
-    Room room1 = new Room(200, hotel);
+    Room room1 = Room.builder().price(200).hotel(hotel).build();
     entityManager.persist(room1);
 
-    Reservation res1 = new Reservation(start, end.plusDays(1), room1);
+    Reservation res1 = Reservation.builder().start(start).end(end.plusDays(1)).room(room1).build();
     entityManager.persist(res1);
     // when
     List<Reservation> result = reservationRepository.findAllColliding(start, end);
     // then
     assertThat(result).hasSize(1);
-    assertThat(result.get(0)).isEqualToComparingOnlyGivenFields(res1, "fromDate", "toDate");
+    assertThat(result.get(0)).isEqualToComparingOnlyGivenFields(res1, "start", "end");
   }
 
   @Test
@@ -71,14 +71,14 @@ public class ReservationRepositoryTest {
     LocalDate end = start.plusDays(4);
 
     Hotel hotel = new Hotel("Temp", "City");
-    Room wantedRoom = new Room(200, hotel);
+    Room wantedRoom = Room.builder().price(200).hotel(hotel).build();
 
     entityManager.persist(wantedRoom);
-    entityManager.persist(new Reservation(start.minusDays(2), start, wantedRoom));
-    entityManager.persist(new Reservation(end, end.plusDays(2), wantedRoom));
-    entityManager.persist(new Reservation(end.plusDays(2), end.plusDays(4), wantedRoom));
-    entityManager.persist(new Reservation(end.plusDays(1), end.plusDays(4), wantedRoom));
-    entityManager.persist(new Reservation(start.minusDays(1), start, wantedRoom));
+    entityManager.persist(Reservation.builder().start(start.minusDays(2)).end(start).room(wantedRoom).build());
+    entityManager.persist(Reservation.builder().start(end).end(end.plusDays(2)).room(wantedRoom).build());
+    entityManager.persist(Reservation.builder().start(end.plusDays(2)).end(end.plusDays(4)).room(wantedRoom).build());
+    entityManager.persist(Reservation.builder().start(end.plusDays(1)).end(end.plusDays(4)).room(wantedRoom).build());
+    entityManager.persist(Reservation.builder().start(start.minusDays(1)).end(start).room(wantedRoom).build());
     // when
     List<Reservation> result = reservationRepository.findAllCollidingForRoom(start, end, singletonList(wantedRoom));
     // then
@@ -92,16 +92,16 @@ public class ReservationRepositoryTest {
     LocalDate end = start.plusDays(4);
 
     Hotel hotel = new Hotel("Temp", "City");
-    Room wantedRoom = new Room(200, hotel);
+    Room wantedRoom = Room.builder().price(200).hotel(hotel).build();
     entityManager.persist(wantedRoom);
 
-    Reservation res1 = new Reservation(start, end.plusDays(1), wantedRoom);
+    Reservation res1 = Reservation.builder().start(start).end(end.plusDays(1)).room(wantedRoom).build();
     entityManager.persist(res1);
     // when
     List<Reservation> result = reservationRepository.findAllCollidingForRoom(start, end, singletonList(wantedRoom));
     // then
     assertThat(result).hasSize(1);
-    assertThat(result.get(0)).isEqualToComparingOnlyGivenFields(res1, "fromDate", "toDate");
+    assertThat(result.get(0)).isEqualToComparingOnlyGivenFields(res1, "start", "end");
   }
 
   @Test
@@ -111,14 +111,14 @@ public class ReservationRepositoryTest {
     LocalDate end = start.plusDays(4);
 
     Hotel hotel = new Hotel("Temp", "City");
-    Room reservedRoom = new Room(100, hotel);
+    Room reservedRoom = Room.builder().price(100).hotel(hotel).build();
     entityManager.persist(reservedRoom);
 
-    Reservation res1 = new Reservation(start, end.plusDays(1), reservedRoom);
+    Reservation res1 = Reservation.builder().start(start).end(end.plusDays(1)).room(reservedRoom).build();
 
     entityManager.persist(res1);
 
-    Room wantedRoom = new Room(200, hotel);
+    Room wantedRoom = Room.builder().price(200).hotel(hotel).build();
     entityManager.persist(wantedRoom);
     // when
     List<Reservation> result = reservationRepository.findAllCollidingForRoom(start, end, singletonList(wantedRoom));

@@ -30,7 +30,8 @@ public class ReservationServiceIntegrationTest {
   public void shouldReturnAvailRooms() {
     // given
     Hotel hotel = new Hotel("Marin", "Kolobrzeg");
-    roomRepository.save(new Room(100, hotel));
+    roomRepository.save(Room.builder()
+        .avail(true).price(100).hotel(hotel).build());
 
     LocalDate start = LocalDate.of(2017, 2, 1);
     LocalDate end = LocalDate.of(2017, 2, 2);
@@ -43,8 +44,27 @@ public class ReservationServiceIntegrationTest {
 
     // then
     assertThat(rooms).hasSize(1);
-    assertThat(rooms).usingElementComparatorIgnoringFields("hotel")
-        .containsExactly(new Room(1L, 100, null));
+    assertThat(rooms).usingElementComparatorIgnoringFields("id", "hotel")
+        .containsExactly(Room.builder().avail(true).price(100).build());
+  }
+
+  @Test
+  public void shouldNotReturnNonAvailRooms() {
+    // given
+    Hotel hotel = new Hotel("Marin2", "Kolobrzeg");
+    roomRepository.save(Room.builder().price(100).hotel(hotel).avail(false).build());
+
+    LocalDate start = LocalDate.of(2017, 2, 1);
+    LocalDate end = LocalDate.of(2017, 2, 2);
+    String city = "Kolobrzeg";
+    int min = 100;
+    int max = 140;
+
+    // when
+    List<Room> rooms = reservationService.getRooms(start, end, city, min, max);
+
+    // then
+    assertThat(rooms).hasSize(0);
   }
 
 }

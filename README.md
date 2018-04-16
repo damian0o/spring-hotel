@@ -62,11 +62,12 @@ Hotel client api
 command | description
 ----|----
 http GET :8080/reservation start=="2016-02-01" end=="2016-02-03" city=="Poznan" min=="100" max=="250" | List available room for specified parameters |
+http POST :8080/reservation start:='"2017-05-24"' end:='"2017-05-26"' roomId:='1' | Add new reservation
 
 
 ## TODO
 
-* Allow client to add new reservations
+* Allow admins to accept reservations
 * Add spring security and create separate roles for administrators and clients
 * Registration endpoint for clients and hotel administrators
 * Serve resources only to owners (hotels)

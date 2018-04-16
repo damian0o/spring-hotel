@@ -27,10 +27,10 @@ public class HotelRepositoryTest {
   public void shouldPersistWithRooms() {
     // given
     Hotel hotel = new Hotel("Pirate Bay Hotel", "Poznan");
-    Room r1 = new Room(100);
-    Room r2 = new Room(200);
-    Room r3 = new Room(300);
-    Room r4 = new Room(400);
+    Room r1 = Room.builder().price(100).build();
+    Room r2 = Room.builder().price(200).build();
+    Room r3 = Room.builder().price(300).build();
+    Room r4 = Room.builder().price(400).build();
     hotel.setRooms(Arrays.asList(r1, r2, r3, r4));
     // when
     Hotel saved = hotelRepository.save(hotel);
